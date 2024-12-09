@@ -1,3 +1,9 @@
-import {} from 'class-validator';
+import { IsOptional } from 'class-validator';
 
-export class UpdateUserDto {}
+export class UpdateUserDto {
+  @IsOptional()
+  email: string;
+
+  @IsOptional()
+  phoneNumber: string;
+}

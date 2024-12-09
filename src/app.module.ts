@@ -9,11 +9,23 @@ import { User } from './models/users/model/users.model';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
+import { ToursModule } from './models/tours/tours.module';
+import { Tour } from './models/tours/model/tours.model';
+import { BookingsModule } from './models/bookings/bookings.module';
+import { Booking } from './models/bookings/model/bookings.model';
+import { ImagesModule } from './models/images/images.module';
+import { Image } from './models/images/model/images.model';
+import { ReviewsModule } from './models/reviews/reviews.module';
+import { Review } from './models/reviews/model/reviews.model';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
+    ToursModule,
+    BookingsModule,
+    ImagesModule,
+    ReviewsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,7 +41,7 @@ import { TransformInterceptor } from './core/transform.interceptor';
           raw: true,
         },
         timezone: '+07:00',
-        models: [User],
+        models: [User, Tour, Booking, Image, Review],
         autoLoadModels: true,
         synchronize: true,
         extra: {

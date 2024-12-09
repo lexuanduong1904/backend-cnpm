@@ -1,9 +1,12 @@
 import { hashPasswordHelper } from '@/helpers/utils';
+import { Booking } from '@/models/bookings/model/bookings.model';
+import { Review } from '@/models/reviews/model/reviews.model';
 import {
   BeforeCreate,
   BeforeUpdate,
   Column,
   DataType,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -47,6 +50,12 @@ export class User extends Model {
     defaultValue: false,
   })
   isAdmin: boolean;
+
+  @HasMany(() => Booking)
+  bookings: Booking[];
+
+  @HasMany(() => Review)
+  reviews: Review[];
 
   @BeforeCreate
   @BeforeUpdate
