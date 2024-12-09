@@ -1,6 +1,7 @@
 // import { Booking } from '@/models/bookings/model/bookings.model';
 // import { Tour } from '@/models/tours/model/tours.model';
 // import { User } from '@/models/users/model/users.model';
+import { Tour } from '@/models/tours/model/tours.model';
 import { User } from '@/models/users/model/users.model';
 import {
   BelongsTo,
@@ -27,12 +28,12 @@ export class Review extends Model {
   })
   userId: string;
 
-  // @ForeignKey(() => Tour)
-  // @Column({
-  //   type: DataType.UUID,
-  //   allowNull: false,
-  // })
-  // tourId: string;
+  @ForeignKey(() => Tour)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  tourId: string;
 
   // @ForeignKey(() => Booking)
   // @Column({
@@ -55,8 +56,8 @@ export class Review extends Model {
   @BelongsTo(() => User, 'userId')
   user: User;
 
-  // @BelongsTo(() => Tour, 'tourId')
-  // tour: Tour;
+  @BelongsTo(() => Tour, 'tourId')
+  tour: Tour;
 
   // @BelongsTo(() => Booking, 'bookingId')
   // booking: Booking;

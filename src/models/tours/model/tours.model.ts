@@ -1,5 +1,6 @@
 import { Booking } from '@/models/bookings/model/bookings.model';
 import { Image } from '@/models/images/model/images.model';
+import { Review } from '@/models/reviews/model/reviews.model';
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
 @Table({ tableName: 'Tour', freezeTableName: true })
@@ -52,4 +53,7 @@ export class Tour extends Model {
 
   @HasMany(() => Image)
   images: Image[];
+
+  @HasMany(() => Review)
+  reviews: Review[];
 }
