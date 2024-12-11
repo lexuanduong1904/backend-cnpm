@@ -1,4 +1,6 @@
 // import { Review } from '@/models/reviews/model/reviews.model';
+import { Checkout } from '@/models/checkouts/model/checkouts.model';
+import { Review } from '@/models/reviews/model/reviews.model';
 import { Tour } from '@/models/tours/model/tours.model';
 import { User } from '@/models/users/model/users.model';
 import {
@@ -6,6 +8,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -45,9 +48,28 @@ export class Booking extends Model {
   })
   bookingDate: Date;
 
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+  })
+  ticketQuantity: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: false,
+  })
+  totalPrice: number;
+
   @BelongsTo(() => User, 'userId')
   user: User;
 
   @BelongsTo(() => Tour, 'tourId')
   tour: Tour;
+
+  @HasOne(() => Review)
+  review: Review;
+
+  @HasOne(() => Checkout)
+  checkout: Checkout;
 }

@@ -1,5 +1,4 @@
 import { Booking } from '@/models/bookings/model/bookings.model';
-
 import {
   BelongsTo,
   Column,
@@ -9,8 +8,8 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'Review', freezeTableName: true })
-export class Review extends Model {
+@Table({ tableName: 'Checkout', freezeTableName: true })
+export class Checkout extends Model {
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
@@ -26,15 +25,22 @@ export class Review extends Model {
   bookingId: string;
 
   @Column({
-    type: DataType.TINYINT,
+    type: DataType.FLOAT,
     allowNull: false,
   })
-  rating: number;
+  amount: number;
 
   @Column({
-    type: DataType.TEXT,
+    type: DataType.STRING(50),
+    allowNull: false,
   })
-  comment: string;
+  paymentMethod: string;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  paymentDate: Date;
 
   @BelongsTo(() => Booking, 'bookingId')
   booking: Booking;

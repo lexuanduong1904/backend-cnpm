@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { CheckoutsModule } from './models/checkouts/checkouts.module';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -17,6 +18,8 @@ import { ImagesModule } from './models/images/images.module';
 import { Image } from './models/images/model/images.model';
 import { ReviewsModule } from './models/reviews/reviews.module';
 import { Review } from './models/reviews/model/reviews.model';
+import { Sequelize } from 'sequelize-typescript';
+import { Checkout } from './models/checkouts/model/checkouts.model';
 
 @Module({
   imports: [
@@ -26,6 +29,7 @@ import { Review } from './models/reviews/model/reviews.model';
     BookingsModule,
     ImagesModule,
     ReviewsModule,
+    CheckoutsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,7 +45,7 @@ import { Review } from './models/reviews/model/reviews.model';
           raw: true,
         },
         timezone: '+07:00',
-        models: [User, Tour, Booking, Image, Review],
+        models: [User, Tour, Booking, Image, Review, Checkout],
         autoLoadModels: true,
         synchronize: true,
         extra: {
@@ -68,4 +72,15 @@ import { Review } from './models/reviews/model/reviews.model';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly sequelize: Sequelize) {}
+
+  async onModuleInit() {
+    try {
+      await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
+      console.log('Database synchronized (force: true)');
+    } catch (error) {
+      console.error('Database synchronization failed:', error);
+    }
+  }
+}

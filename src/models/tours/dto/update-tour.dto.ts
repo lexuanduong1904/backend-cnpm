@@ -1,4 +1,21 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTourDto } from './create-tour.dto';
+import { IsOptional } from 'class-validator';
 
-export class UpdateTourDto extends PartialType(CreateTourDto) {}
+export class UpdateTourDto {
+  @IsOptional()
+  title: string;
+
+  @IsOptional()
+  description: string;
+
+  @IsOptional()
+  quantity: number;
+
+  @IsOptional()
+  price: number;
+
+  @IsOptional()
+  startDate: Date;
+
+  @IsOptional()
+  endDate: Date;
+}

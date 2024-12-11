@@ -3,6 +3,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UsersService } from '@/models/users/users.service';
 import { comparePasswordHelper } from '@/helpers/utils';
 import { JwtService } from '@nestjs/jwt';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -49,8 +50,13 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async handleChangePassword(id: string, values: ChangePasswordDto) {
+    return await this.usersService.handleChangePassword(id, values);
   }
 }

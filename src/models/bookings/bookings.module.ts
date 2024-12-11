@@ -5,9 +5,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Booking } from './model/bookings.model';
 import { User } from '../users/model/users.model';
 import { Tour } from '../tours/model/tours.model';
+import { Review } from '../reviews/model/reviews.model';
+import { Checkout } from '../checkouts/model/checkouts.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Booking, User, Tour])],
+  imports: [
+    SequelizeModule.forFeature([Booking, User, Tour, Review, Checkout]),
+  ],
   controllers: [BookingsController],
   providers: [BookingsService],
 })

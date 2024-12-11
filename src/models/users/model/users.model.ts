@@ -1,6 +1,5 @@
 import { hashPasswordHelper } from '@/helpers/utils';
 import { Booking } from '@/models/bookings/model/bookings.model';
-import { Review } from '@/models/reviews/model/reviews.model';
 import {
   BeforeCreate,
   BeforeUpdate,
@@ -53,9 +52,6 @@ export class User extends Model {
 
   @HasMany(() => Booking)
   bookings: Booking[];
-
-  @HasMany(() => Review)
-  reviews: Review[];
 
   @BeforeCreate
   @BeforeUpdate

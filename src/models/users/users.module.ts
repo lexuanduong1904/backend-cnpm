@@ -4,10 +4,9 @@ import { UsersController } from './users.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './model/users.model';
 import { Booking } from '../bookings/model/bookings.model';
-import { Review } from '../reviews/model/reviews.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Booking, Review])],
+  imports: [SequelizeModule.forFeature([User, Booking])],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

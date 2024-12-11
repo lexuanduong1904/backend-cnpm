@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
 import { User } from './model/users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { ChangePasswordDto } from '@/auth/dto/change-password.dto';
+import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()
 export class UsersService {
@@ -10,19 +12,6 @@ export class UsersService {
     @InjectModel(User)
     private readonly usersModel: typeof User,
   ) {}
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 
   async findByUsername(username: string): Promise<User> {
     return await this.usersModel.findOne({
@@ -85,15 +74,36 @@ export class UsersService {
   }
 
   async update(id: string, values: UpdateUserDto) {
-    const user = await this.usersModel.findByPk(id);
-    await user.update(values);
+    await this.usersModel.update(values, {
+      where: { id: id },
+    });
     return await this.usersModel.findByPk(id, {
       attributes: ['id', 'username', 'email', 'phoneNumber'],
     });
   }
 
   async remove(id: string) {
-    const user = await this.usersModel.findByPk(id);
-    return await user.destroy();
+    return await this.usersModel.destroy({
+      where: { id: id },
+    });
+  }
+
+  async handleChangePassword(id: string, values: ChangePasswordDto) {
+    const currUser = await this.usersModel.findByPk(id);
+    if (!currUser) throw new BadRequestException('User is not exist!');
+    if (values.newPassword !== values.rePassword)
+      throw new BadRequestException(
+        'New password and repeat password must be the same!',
+      );
+    if (!comparePasswordHelper(values.password, currUser.password))
+      throw new BadRequestException('Password is incorrect!');
+    return await this.usersModel.update(
+      {
+        password: await hashPasswordHelper(values.newPassword),
+      },
+      {
+        where: { id: id },
+      },
+    );
   }
 }

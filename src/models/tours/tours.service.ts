@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Tour } from './model/tours.model';
 
 @Injectable()
 export class ToursService {
+  constructor(
+    @InjectModel(Tour)
+    private readonly toursModel: typeof Tour,
+  ) {}
+
   create(createTourDto: CreateTourDto) {
     return 'This action adds a new tour';
   }
