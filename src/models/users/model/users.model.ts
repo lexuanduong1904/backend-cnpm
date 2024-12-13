@@ -1,5 +1,6 @@
 import { hashPasswordHelper } from '@/helpers/utils';
 import { Booking } from '@/models/bookings/model/bookings.model';
+import { SupportRequest } from '@/models/support-requests/model/support-requests.model';
 import {
   BeforeCreate,
   BeforeUpdate,
@@ -52,6 +53,9 @@ export class User extends Model {
 
   @HasMany(() => Booking)
   bookings: Booking[];
+
+  @HasMany(() => SupportRequest)
+  supportRequests: SupportRequest[];
 
   @BeforeCreate
   @BeforeUpdate

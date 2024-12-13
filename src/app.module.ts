@@ -1,3 +1,5 @@
+// import { AppModule } from './app.module';
+import { SupportRequestsModule } from './models/support-requests/support-requests.module';
 import { CheckoutsModule } from './models/checkouts/checkouts.module';
 import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -20,6 +22,7 @@ import { ReviewsModule } from './models/reviews/reviews.module';
 import { Review } from './models/reviews/model/reviews.model';
 import { Sequelize } from 'sequelize-typescript';
 import { Checkout } from './models/checkouts/model/checkouts.model';
+import { SupportRequest } from './models/support-requests/model/support-requests.model';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { Checkout } from './models/checkouts/model/checkouts.model';
     ImagesModule,
     ReviewsModule,
     CheckoutsModule,
+    SupportRequestsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,11 +45,11 @@ import { Checkout } from './models/checkouts/model/checkouts.model';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        query: {
-          raw: true,
-        },
+        // query: {
+        //   raw: true,
+        // },
         timezone: '+07:00',
-        models: [User, Tour, Booking, Image, Review, Checkout],
+        models: [User, Tour, Booking, Image, Review, Checkout, SupportRequest],
         autoLoadModels: true,
         synchronize: true,
         extra: {
@@ -72,15 +76,16 @@ import { Checkout } from './models/checkouts/model/checkouts.model';
     },
   ],
 })
-export class AppModule implements OnModuleInit {
-  constructor(private readonly sequelize: Sequelize) {}
+export class AppModule {}
+// export class AppModule implements OnModuleInit {
+//   constructor(private readonly sequelize: Sequelize) {}
 
-  async onModuleInit() {
-    try {
-      await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
-      console.log('Database synchronized (force: true)');
-    } catch (error) {
-      console.error('Database synchronization failed:', error);
-    }
-  }
-}
+//   async onModuleInit() {
+//     try {
+//       await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
+//       console.log('Database synchronized (force: true)');
+//     } catch (error) {
+//       console.error('Database synchronization failed:', error);
+//     }
+//   }
+// }

@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
-import { UpdateImageDto } from './dto/update-image.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Image } from './model/images.model';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class ImagesService {
-  create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
+  constructor(
+    @InjectModel(Image)
+    private readonly imagesModel: typeof Image,
+  ) {}
+
+  async create(createImageDto: CreateImageDto) {
+    const image = this.imagesModel.build({
+      ...createImageDto,
+    });
+    const newImage = await image.save();
+    return await this.imagesModel.findByPk(newImage.id, {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all images`;
+  async findImageByTourId(tourId: string) {
+    return await this.imagesModel.findAll({
+      where: { tourId: tourId },
+      attributes: {
+        exclude: ['tourId'],
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} image`;
+  async createImages(
+    images: { tourId: string; url: string; description: string }[],
+    transaction?: Transaction,
+  ) {
+    return await this.imagesModel.bulkCreate(images, { transaction });
   }
 
-  update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} image`;
-  }
+  async updateImages(
+    images: { tourId: string; url: string; description: string }[],
+    transaction?: Transaction,
+  ) {}
 }

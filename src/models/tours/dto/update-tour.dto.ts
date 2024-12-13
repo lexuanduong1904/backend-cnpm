@@ -1,3 +1,4 @@
+import { CreateImageDto } from '@/models/images/dto/create-image.dto';
 import { IsOptional } from 'class-validator';
 
 export class UpdateTourDto {
@@ -6,6 +7,15 @@ export class UpdateTourDto {
 
   @IsOptional()
   description: string;
+
+  @IsOptional()
+  destination: string;
+
+  @IsOptional()
+  startLocation: string;
+
+  @IsOptional()
+  transportation: string;
 
   @IsOptional()
   quantity: number;
@@ -17,5 +27,5 @@ export class UpdateTourDto {
   startDate: Date;
 
   @IsOptional()
-  endDate: Date;
+  images: Omit<CreateImageDto, 'tourId'>[] | [];
 }

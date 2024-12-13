@@ -68,6 +68,6 @@ export class Tour extends Model {
   @HasMany(() => Booking)
   bookings: Booking[];
 
-  @HasMany(() => Image)
+  @HasMany(() => Image, { as: 'images' })
   images: Image[];
 }
