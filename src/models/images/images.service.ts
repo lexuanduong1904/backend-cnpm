@@ -84,6 +84,9 @@ export class ImagesService {
   }
 
   async deleteImages(tourId: string, transaction?: Transaction) {
-    return null;
+    return await this.imagesModel.destroy({
+      where: { tourId },
+      transaction,
+    });
   }
 }

@@ -189,7 +189,17 @@ export class ToursService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tour`;
+  async remove(id: string) {
+    const transaction = await this.sequelize.transaction();
+    try {
+      await this.imagesService.deleteImages(id, transaction);
+      transaction.commit();
+      return await this.toursModel.destroy({
+        where: { id },
+      });
+    } catch (e) {
+      transaction.rollback();
+      throw new BadRequestException(e);
+    }
   }
 }

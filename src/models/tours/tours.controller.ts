@@ -3,8 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
   Delete,
   Query,
   Put,
@@ -49,8 +47,10 @@ export class ToursController {
     return this.toursService.update(id, updateTourDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.toursService.remove(+id);
+  @Delete()
+  @ResponseMessage('Delete tour success!')
+  @Public()
+  async remove(@Query('id') id: string) {
+    return await this.toursService.remove(id);
   }
 }

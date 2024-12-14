@@ -23,6 +23,8 @@ import { Review } from './models/reviews/model/reviews.model';
 import { Sequelize } from 'sequelize-typescript';
 import { Checkout } from './models/checkouts/model/checkouts.model';
 import { SupportRequest } from './models/support-requests/model/support-requests.model';
+import { BookingGuestsModule } from './models/booking-guests/booking-guests.module';
+import { BookingGuests } from './models/booking-guests/model/booking-guests.model';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { SupportRequest } from './models/support-requests/model/support-requests
     ReviewsModule,
     CheckoutsModule,
     SupportRequestsModule,
+    BookingGuestsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -56,7 +59,16 @@ import { SupportRequest } from './models/support-requests/model/support-requests
           },
         },
         timezone: '+07:00',
-        models: [User, Tour, Booking, Image, Review, Checkout, SupportRequest],
+        models: [
+          User,
+          Tour,
+          Booking,
+          Image,
+          Review,
+          Checkout,
+          SupportRequest,
+          BookingGuests,
+        ],
         autoLoadModels: true,
         synchronize: true,
         extra: {
@@ -83,16 +95,16 @@ import { SupportRequest } from './models/support-requests/model/support-requests
     },
   ],
 })
-export class AppModule {}
-// export class AppModule implements OnModuleInit {
-//   constructor(private readonly sequelize: Sequelize) {}
+// export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly sequelize: Sequelize) {}
 
-//   async onModuleInit() {
-//     try {
-//       await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
-//       console.log('Database synchronized (force: true)');
-//     } catch (error) {
-//       console.error('Database synchronization failed:', error);
-//     }
-//   }
-// }
+  async onModuleInit() {
+    try {
+      await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
+      console.log('Database synchronized (force: true)');
+    } catch (error) {
+      console.error('Database synchronization failed:', error);
+    }
+  }
+}

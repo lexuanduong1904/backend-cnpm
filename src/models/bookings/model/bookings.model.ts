@@ -1,13 +1,16 @@
 // import { Review } from '@/models/reviews/model/reviews.model';
+import { BookingGuests } from '@/models/booking-guests/model/booking-guests.model';
 import { Checkout } from '@/models/checkouts/model/checkouts.model';
 import { Review } from '@/models/reviews/model/reviews.model';
 import { Tour } from '@/models/tours/model/tours.model';
 import { User } from '@/models/users/model/users.model';
+import { BookingStatusEnum } from '@/types/enums/booking-status.enum';
 import {
   BelongsTo,
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   HasOne,
   Model,
   Table,
@@ -37,10 +40,11 @@ export class Booking extends Model {
   tourId: string;
 
   @Column({
-    type: DataType.STRING(100),
+    type: DataType.ENUM(...Object.values(BookingStatusEnum)),
     allowNull: false,
+    defaultValue: BookingStatusEnum.Pending,
   })
-  status: string;
+  status: BookingStatusEnum;
 
   @Column({
     type: DataType.DATE,
@@ -72,4 +76,7 @@ export class Booking extends Model {
 
   @HasOne(() => Checkout)
   checkout: Checkout;
+
+  @HasMany(() => BookingGuests)
+  bookingGuests: BookingGuests[];
 }

@@ -1,5 +1,4 @@
 import { Booking } from '@/models/bookings/model/bookings.model';
-import { PaymentMethodEnum } from '@/types/enums/payment-method.enum';
 import {
   BelongsTo,
   Column,
@@ -9,8 +8,8 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'Checkout', freezeTableName: true })
-export class Checkout extends Model {
+@Table({ tableName: 'BookingGuests', freezeTableName: true })
+export class BookingGuests extends Model {
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
@@ -26,22 +25,22 @@ export class Checkout extends Model {
   bookingId: string;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.STRING(100),
     allowNull: false,
   })
-  amount: number;
+  guestName: string;
 
   @Column({
-    type: DataType.ENUM(...Object.values(PaymentMethodEnum)),
-    allowNull: false,
+    type: DataType.STRING(15),
+    allowNull: true,
   })
-  paymentMethod: PaymentMethodEnum;
+  guestPhoneNumber: string;
 
   @Column({
-    type: DataType.DATE,
-    allowNull: false,
+    type: DataType.STRING(100),
+    allowNull: true,
   })
-  paymentDate: Date;
+  guestEmail: string;
 
   @BelongsTo(() => Booking, 'bookingId')
   booking: Booking;
