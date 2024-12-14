@@ -1,12 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
 import { ImagesService } from './../images/images.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Tour } from './model/tours.model';
-import { CreateImageDto } from '../images/dto/create-image.dto';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Image } from '../images/model/images.model';
 
 @Injectable()
@@ -20,11 +19,28 @@ export class ToursService {
 
   async create(createTourDto: CreateTourDto) {
     const images = createTourDto.images;
+    const seenUrls = new Set<string>();
+    const duplicateUrls = new Set<string>();
+
+    images.map((img) => {
+      if (seenUrls.has(img.imageUrl)) {
+        duplicateUrls.add(img.imageUrl);
+      }
+      seenUrls.add(img.imageUrl);
+    });
+
+    if (duplicateUrls.size > 0) {
+      throw new BadRequestException(
+        `Duplicate URLs found: ${Array.from(duplicateUrls).join(', ')}`,
+      );
+    }
     delete createTourDto.images;
     const transaction = await this.sequelize.transaction();
     try {
       const startDate = moment(createTourDto.startDate, 'DD/MM/YYYY');
       const endDate = moment(createTourDto.endDate, 'DD/MM/YYYY');
+      if (startDate.isAfter(endDate))
+        throw new BadRequestException('Start date must be before end date!');
       const tour = await this.toursModel.create(
         {
           title: createTourDto.title,
@@ -68,6 +84,7 @@ export class ToursService {
     const where = filter ? { ...JSON.parse(filter) } : {}; // Mặc định sort theo `createdAt`
     const data = await this.toursModel.findAndCountAll({
       where: where,
+      distinct: true,
       limit: page,
       offset,
       order: [[order[0], order[1]]],
@@ -80,6 +97,8 @@ export class ToursService {
           },
         },
       ],
+      raw: false,
+      nest: true,
     });
     const tours = data?.rows;
     const totalItems = data.count;
@@ -98,11 +117,76 @@ export class ToursService {
           },
         },
       ],
+      raw: false,
+      nest: true,
     });
   }
 
-  update(id: number, updateTourDto: UpdateTourDto) {
-    return `This action updates a #${id} tour`;
+  async update(id: string, updateTourDto: UpdateTourDto) {
+    const images = updateTourDto?.images;
+    const transaction = await this.sequelize.transaction();
+    delete updateTourDto.images;
+    const currTour = await this.toursModel.findByPk(id);
+    const newStartDate: Moment = updateTourDto?.startDate
+      ? moment(updateTourDto.startDate, 'DD/MM/YYYY')
+      : moment(currTour.startDate);
+    const newEndDate: Moment = updateTourDto?.endDate
+      ? moment(updateTourDto.endDate, 'DD/MM/YYYY')
+      : moment(currTour.endDate);
+    if (newStartDate.isAfter(newEndDate))
+      throw new BadRequestException('Start date must be before end date!');
+    delete updateTourDto.startDate;
+    delete updateTourDto.endDate;
+    try {
+      // Handle update images
+      if (images) {
+        const seenUrls = new Set<string>();
+        const duplicateUrls = new Set<string>();
+
+        // Check list images
+        images.map((img) => {
+          if (seenUrls.has(img.imageUrl)) {
+            duplicateUrls.add(img.imageUrl);
+          }
+          seenUrls.add(img.imageUrl);
+        });
+
+        // Check duplicate
+        if (duplicateUrls.size > 0) {
+          throw new BadRequestException(
+            `Duplicate URLs found: ${Array.from(duplicateUrls).join(', ')}`,
+          );
+        }
+
+        const imagesWithTourId = images.map((image) => {
+          return {
+            ...image,
+            tourId: id,
+          };
+        });
+        await this.imagesService.updateImages(
+          id,
+          imagesWithTourId,
+          transaction,
+        );
+      }
+      await this.toursModel.update(
+        {
+          ...updateTourDto,
+          startDate: newStartDate,
+          endDate: newEndDate,
+        },
+        {
+          where: { id },
+          transaction,
+        },
+      );
+      transaction.commit();
+      return await this.findOne(id);
+    } catch (e) {
+      transaction.rollback();
+      throw new BadRequestException(e);
+    }
   }
 
   remove(id: number) {

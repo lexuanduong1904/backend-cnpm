@@ -27,5 +27,8 @@ export class UpdateTourDto {
   startDate: Date;
 
   @IsOptional()
+  endDate: Date;
+
+  @IsOptional()
   images: Omit<CreateImageDto, 'tourId'>[] | [];
 }

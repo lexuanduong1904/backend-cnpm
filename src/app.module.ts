@@ -45,9 +45,16 @@ import { SupportRequest } from './models/support-requests/model/support-requests
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        // query: {
-        //   raw: true,
-        // },
+        query: {
+          raw: true,
+        },
+        dialectOptions: {
+          options: {
+            // Your tedious options here
+            useUTC: false,
+            dateFirst: 1,
+          },
+        },
         timezone: '+07:00',
         models: [User, Tour, Booking, Image, Review, Checkout, SupportRequest],
         autoLoadModels: true,

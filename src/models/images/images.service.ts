@@ -23,7 +23,7 @@ export class ImagesService {
     });
   }
 
-  async findImageByTourId(tourId: string) {
+  async findImagesByTourId(tourId: string) {
     return await this.imagesModel.findAll({
       where: { tourId: tourId },
       attributes: {
@@ -33,14 +33,57 @@ export class ImagesService {
   }
 
   async createImages(
-    images: { tourId: string; url: string; description: string }[],
+    images: { tourId: string; imageUrl: string; description: string }[],
     transaction?: Transaction,
   ) {
     return await this.imagesModel.bulkCreate(images, { transaction });
   }
 
   async updateImages(
-    images: { tourId: string; url: string; description: string }[],
+    tourId: string,
+    images: { tourId: string; imageUrl: string; description: string }[],
     transaction?: Transaction,
-  ) {}
+  ) {
+    const currImages = await this.findImagesByTourId(tourId);
+    const currUrls = currImages.map((image) => {
+      return image.imageUrl;
+    });
+    const newUrls = images.map((image) => {
+      return image.imageUrl;
+    });
+    const imagesToDelete = currImages.filter(
+      (img) => !newUrls.includes(img.imageUrl),
+    );
+    console.log(imagesToDelete);
+
+    if (imagesToDelete.length > 0) {
+      await this.imagesModel.destroy({
+        where: { id: imagesToDelete.map((img) => img.id) },
+        transaction,
+      });
+    }
+
+    for (const img of images) {
+      if (currUrls.includes(img.imageUrl)) {
+        await this.imagesModel.update(
+          {
+            description: img.description,
+          },
+          {
+            where: {
+              imageUrl: img.imageUrl,
+              tourId: tourId,
+            },
+            transaction,
+          },
+        );
+      } else {
+        await this.imagesModel.create(img, { transaction });
+      }
+    }
+  }
+
+  async deleteImages(tourId: string, transaction?: Transaction) {
+    return null;
+  }
 }

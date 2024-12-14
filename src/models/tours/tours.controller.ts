@@ -12,20 +12,21 @@ import {
 import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
-import { Public } from '@/decorator/customize';
+import { Public, ResponseMessage } from '@/decorator/customize';
 
 @Controller('tours')
 export class ToursController {
   constructor(private readonly toursService: ToursService) {}
 
   @Post('/create-tour')
+  @ResponseMessage('Create new tour success!')
   @Public()
   async create(@Body() createTourDto: CreateTourDto) {
-    // console.log(createTourDto.images);
     return await this.toursService.create(createTourDto);
   }
 
   @Get('/list-tours')
+  @ResponseMessage('Get list tours success!')
   @Public()
   async findAll(
     @Query('current') current: string,
@@ -42,8 +43,10 @@ export class ToursController {
   }
 
   @Put()
+  @ResponseMessage('Update infomation tour success!')
+  @Public()
   async update(@Query('id') id: string, @Body() updateTourDto: UpdateTourDto) {
-    return this.toursService.update(+id, updateTourDto);
+    return this.toursService.update(id, updateTourDto);
   }
 
   @Delete(':id')
