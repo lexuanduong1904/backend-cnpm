@@ -8,6 +8,8 @@ import { ToursService } from '../tours/tours.service';
 import { Sequelize } from 'sequelize-typescript';
 import dayjs from 'dayjs';
 import { BookingGuests } from '../booking-guests/model/booking-guests.model';
+import { BookingStatusEnum } from '@/types/enums/booking-status.enum';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class BookingsService {
@@ -177,5 +179,21 @@ export class BookingsService {
       transaction.rollback();
       throw new BadRequestException(e);
     }
+  }
+
+  async changeStatus(
+    id: string,
+    status: BookingStatusEnum,
+    transaction: Transaction,
+  ) {
+    return await this.bookingsModel.update(
+      {
+        status,
+      },
+      {
+        where: { id },
+        transaction,
+      },
+    );
   }
 }

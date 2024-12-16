@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { CheckoutsService } from './checkouts.service';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
-import { UpdateCheckoutDto } from './dto/update-checkout.dto';
+import { Public, ResponseMessage } from '@/decorator/customize';
 
 @Controller('checkouts')
 export class CheckoutsController {
   constructor(private readonly checkoutsService: CheckoutsService) {}
 
-  @Post()
-  create(@Body() createCheckoutDto: CreateCheckoutDto) {
-    return this.checkoutsService.create(createCheckoutDto);
+  @Post('/create-checkout')
+  @Public()
+  @ResponseMessage('Create checkout success!')
+  async create(@Body() createCheckoutDto: CreateCheckoutDto) {
+    return await this.checkoutsService.create(createCheckoutDto);
+  }
+
+  @Get('/list-checkouts')
+  @Public()
+  async findAll(
+    @Query('current') current: string,
+    @Query('pageSize') pageSize: string,
+    @Query('filter') filter: string,
+    @Query('sort') sort: string,
+  ) {
+    return await this.checkoutsService.findAll(current, pageSize, filter, sort);
   }
 
   @Get()
-  findAll() {
-    return this.checkoutsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.checkoutsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCheckoutDto: UpdateCheckoutDto) {
-    return this.checkoutsService.update(+id, updateCheckoutDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.checkoutsService.remove(+id);
+  @Public()
+  async findOne(@Query('id') id: string) {
+    return await this.checkoutsService.findOne(id);
   }
 }
