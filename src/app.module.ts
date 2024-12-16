@@ -25,6 +25,8 @@ import { Checkout } from './models/checkouts/model/checkouts.model';
 import { SupportRequest } from './models/support-requests/model/support-requests.model';
 import { BookingGuestsModule } from './models/booking-guests/booking-guests.module';
 import { BookingGuests } from './models/booking-guests/model/booking-guests.model';
+import { Invoice } from './models/invoices/model/invoices.model';
+import { InvoicesModule } from './models/invoices/invoices.module';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { BookingGuests } from './models/booking-guests/model/booking-guests.mode
     CheckoutsModule,
     SupportRequestsModule,
     BookingGuestsModule,
+    InvoicesModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -68,6 +71,7 @@ import { BookingGuests } from './models/booking-guests/model/booking-guests.mode
           Checkout,
           SupportRequest,
           BookingGuests,
+          Invoice,
         ],
         autoLoadModels: true,
         synchronize: true,
@@ -95,16 +99,16 @@ import { BookingGuests } from './models/booking-guests/model/booking-guests.mode
     },
   ],
 })
-// export class AppModule {}
-export class AppModule implements OnModuleInit {
-  constructor(private readonly sequelize: Sequelize) {}
+export class AppModule {}
+// export class AppModule implements OnModuleInit {
+//   constructor(private readonly sequelize: Sequelize) {}
 
-  async onModuleInit() {
-    try {
-      await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
-      console.log('Database synchronized (force: true)');
-    } catch (error) {
-      console.error('Database synchronization failed:', error);
-    }
-  }
-}
+//   async onModuleInit() {
+//     try {
+//       await this.sequelize.sync({ force: true }); // Xóa tất cả bảng và tạo lại
+//       console.log('Database synchronized (force: true)');
+//     } catch (error) {
+//       console.error('Database synchronization failed:', error);
+//     }
+//   }
+// }

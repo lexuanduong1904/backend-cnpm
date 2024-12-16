@@ -1,6 +1,7 @@
 // import { Review } from '@/models/reviews/model/reviews.model';
 import { BookingGuests } from '@/models/booking-guests/model/booking-guests.model';
 import { Checkout } from '@/models/checkouts/model/checkouts.model';
+import { Invoice } from '@/models/invoices/model/invoices.model';
 import { Review } from '@/models/reviews/model/reviews.model';
 import { Tour } from '@/models/tours/model/tours.model';
 import { User } from '@/models/users/model/users.model';
@@ -79,4 +80,7 @@ export class Booking extends Model {
 
   @HasMany(() => BookingGuests)
   bookingGuests: BookingGuests[];
+
+  @HasOne(() => Invoice)
+  invoice: Invoice;
 }
