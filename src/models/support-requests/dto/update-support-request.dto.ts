@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateSupportRequestDto } from './create-support-request.dto';
+import { IsOptional } from 'class-validator';
 
-export class UpdateSupportRequestDto extends PartialType(CreateSupportRequestDto) {}
+export class UpdateSupportRequestDto {
+  @IsOptional()
+  message: string;
+
+  @IsOptional()
+  readStatus: boolean;
+}
