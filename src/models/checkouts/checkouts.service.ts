@@ -24,6 +24,12 @@ export class CheckoutsService {
     const now = dayjs();
     if (!currBooking)
       throw new BadRequestException('This booking is not found!');
+    if (
+      await this.checkoutsModel.findOne({
+        where: { bookingId: createCheckoutDto.bookingId },
+      })
+    )
+      throw new BadRequestException('This booking is checkouted!');
     try {
       const newCheckout = await this.checkoutsModel.create(
         {
