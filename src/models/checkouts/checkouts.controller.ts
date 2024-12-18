@@ -1,21 +1,19 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { CheckoutsService } from './checkouts.service';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
-import { Public, ResponseMessage } from '@/decorator/customize';
+import { ResponseMessage } from '@/decorator/customize';
 
 @Controller('checkouts')
 export class CheckoutsController {
   constructor(private readonly checkoutsService: CheckoutsService) {}
 
   @Post('/create-checkout')
-  @Public()
   @ResponseMessage('Create checkout success!')
   async create(@Body() createCheckoutDto: CreateCheckoutDto) {
     return await this.checkoutsService.create(createCheckoutDto);
   }
 
   @Get('/list-checkouts')
-  @Public()
   async findAll(
     @Query('current') current: string,
     @Query('pageSize') pageSize: string,
@@ -26,7 +24,6 @@ export class CheckoutsController {
   }
 
   @Get()
-  @Public()
   async findOne(@Query('id') id: string) {
     return await this.checkoutsService.findOne(id);
   }

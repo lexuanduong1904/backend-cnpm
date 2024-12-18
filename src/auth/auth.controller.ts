@@ -32,7 +32,6 @@ export class AuthController {
   }
 
   @Post('/change-password')
-  @Public()
   @ResponseMessage('Change password success!')
   async handleChangePassword(
     @Query('id') id: string,

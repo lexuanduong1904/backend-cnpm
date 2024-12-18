@@ -17,7 +17,6 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post('/create-review')
-  @Public()
   @ResponseMessage('Create review success!')
   async create(@Body() createReviewDto: CreateReviewDto) {
     return await this.reviewsService.create(createReviewDto);
@@ -41,14 +40,12 @@ export class ReviewsController {
   }
 
   @Put()
-  @Public()
   @ResponseMessage('Update review success!')
   async update(@Query('id') id: string, updateReviewDto: UpdateReviewDto) {
     return await this.reviewsService.update(id, updateReviewDto);
   }
 
   @Delete()
-  @Public()
   @ResponseMessage('Delete review success!')
   async delete(@Query('id') id: string) {
     return await this.reviewsService.delete(id);

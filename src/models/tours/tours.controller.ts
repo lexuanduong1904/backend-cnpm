@@ -36,20 +36,19 @@ export class ToursController {
   }
 
   @Get()
+  @Public()
   async findOne(@Query('id') id: string) {
     return await this.toursService.findOne(id);
   }
 
   @Put()
   @ResponseMessage('Update infomation tour success!')
-  @Public()
   async update(@Query('id') id: string, @Body() updateTourDto: UpdateTourDto) {
     return this.toursService.update(id, updateTourDto);
   }
 
   @Delete()
   @ResponseMessage('Delete tour success!')
-  @Public()
   async remove(@Query('id') id: string) {
     return await this.toursService.remove(id);
   }
